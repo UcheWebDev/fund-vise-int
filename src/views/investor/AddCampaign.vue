@@ -1,0 +1,510 @@
+<template>
+  <InvestorDashboardHeader></InvestorDashboardHeader>
+  <div class="add-campaign add-funds">
+    <div class="container">
+      <h1>Add Fund</h1>
+      <p class="gray">
+        Create and publish a fund listing and start receiving applications.
+      </p>
+    </div>
+    <div class="main-wrapper">
+      <div class="container small">
+        <ul class="steps nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a
+              href="#"
+              class="nav-link active"
+              id="tab1"
+              data-bs-toggle="tab"
+              data-bs-target="#about"
+              @click="Level1Tab(0)"
+              type="button"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+              ><span>01</span> About Fund</a
+            >
+          </li>
+          <li class="nav-item" role="presentation">
+            <a
+              href="#"
+              class="nav-link"
+              id="tab2"
+              data-bs-toggle="tab"
+              data-bs-target="#Investment"
+              @click="Level1Tab(1)"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+              ><span>02</span>Fund Value</a
+            >
+          </li>
+        </ul>
+        <Form @submit="nextStep" :validation-schema="currentSchema" keep-values>
+          <div class="tab-content" id="myTabContent">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': currentStep === 0 }"
+              id="about"
+              role="tabpanel"
+              aria-labelledby="tab1"
+              v-if="currentStep === 0"
+            >
+              <div class="form">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Name of Fund</label>
+                        <Field
+                          type="text"
+                          name="name"
+                          class="form-control"
+                          placeholder="Name of fund"
+                        />
+                      </div>
+                      <p class="small"><ErrorMessage name="name" /></p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Type of Fund</label>
+                        <Field
+                          name="fund_type"
+                          as="select"
+                          class="form-control"
+                        >
+                          <option value="">Type of fund</option>
+                          <option
+                            v-for="fundType in startupFundTypes"
+                            :key="fundType"
+                            :value="fundType"
+                          >
+                            {{ fundType }}
+                          </option>
+                        </Field>
+                        <i class="fa fa-angle-down"></i>
+                      </div>
+                      <p class="small"><ErrorMessage name="fund_type" /></p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">About Fund</label>
+                        <Field type="text" name="about_fund" v-slot="{ field }">
+                          <textarea
+                            id="text"
+                            cols="30"
+                            rows="10"
+                            class="form-control"
+                            v-bind="field"
+                            placeholder="Please write a description on the fund."
+                          ></textarea>
+                        </Field>
+                      </div>
+                      <p class="small"><ErrorMessage name="about_fund" /></p>
+                    </div>
+                    <div class="browse-wrapper">
+                      <p class="large">Add Fund Image</p>
+                      <div class="browse">
+                        <p class="gray">Drop files here to upload…</p>
+                        <Field name="file" v-slot="{ handleChange }">
+                          <input
+                            type="file"
+                            @change="handleFileChange"
+                            @blur="handleChange"
+                          />
+                        </Field>
+                      </div>
+                      <div class="mt-4">
+                        <p class="small"><ErrorMessage name="file" /></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Location (Country)</label>
+                        <Field
+                          name="country"
+                          as="select"
+                          class="form-control"
+                          @change="getCities"
+                          v-model="selectedCountry"
+                        >
+                          <option value="s">Select country</option>
+                          <option
+                            v-for="cou in countryList"
+                            :key="cou"
+                            :value="cou"
+                          >
+                            {{ cou }}
+                          </option>
+                        </Field>
+                      </div>
+                      <p class="small"><ErrorMessage name="country" /></p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Location (City)</label>
+                        <Field name="city" as="select" class="form-control">
+                          <option value="a">Select city</option>
+                          <option v-for="cy in cityList" :key="cy" :value="cy">
+                            {{ cy }}
+                          </option>
+                        </Field>
+                      </div>
+                      <p class="small"><ErrorMessage name="city" /></p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Youtube Video</label>
+                        <Field
+                          name="youtube"
+                          id="name"
+                          class="form-control"
+                          placeholder="Paste your Youtube or Vimeo iframe embeded code here..."
+                        />
+                      </div>
+                      <p class="small"><ErrorMessage name="youtube" /></p>
+                    </div>
+                    <div class="demo-image">
+                      <img
+                        src="../../assets/images/demo-image.svg"
+                        alt="sada"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': currentStep === 1 }"
+              id="Investment"
+              role="tabpanel"
+              aria-labelledby="tab2"
+              v-if="currentStep === 1"
+            >
+              <div class="form">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Total Fund Value</label>
+                        <Field
+                          name="fund_value"
+                          id="name"
+                          class="form-control"
+                          type="number"
+                          placeholder="Total fund value"
+                        />
+                      </div>
+                      <p class="small">
+                        <ErrorMessage name="fund_value" />
+                      </p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">
+                          How many business are you looking to fund?</label
+                        >
+                        <Field
+                          name="no_of_business"
+                          as="select"
+                          class="form-control"
+                        >
+                          <option value="">Select No. of business</option>
+                          <option
+                            v-for="num in numberRange"
+                            :key="num"
+                            :value="num"
+                          >
+                            {{ num }}
+                          </option>
+                          <!-- <option v-for="sta in stages" :key="sta" :value="sta">
+                            {{ sta }}
+                          </option> -->
+                        </Field>
+                        <i class="fa fa-angle-down"></i>
+                      </div>
+                      <p class="small">
+                        <ErrorMessage name="no_of_business" />
+                      </p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name"
+                          >Is there any specific criteria applicants must have
+                          in order to apply to this fund?</label
+                        >
+                        <Field
+                          type="text"
+                          name="extra_criteria"
+                          v-slot="{ field }"
+                        >
+                          <textarea
+                            id="text"
+                            cols="30"
+                            rows="10"
+                            class="form-control"
+                            v-bind="field"
+                            placeholder="Enter criteria"
+                          ></textarea>
+                        </Field>
+                      </div>
+                      <p class="small">
+                        <ErrorMessage name="extra_criteria" />
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Funding per business</label>
+                        <Field
+                          name="fund_per_business"
+                          id="name"
+                          class="form-control"
+                          type="number"
+                          placeholder="Funding per business"
+                        />
+                      </div>
+                      <p class="small">
+                        <ErrorMessage name="fund_per_business" />
+                      </p>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="name">Average percentage taken</label>
+                        <Field
+                          name="average_percentage"
+                          id="name"
+                          class="form-control"
+                          type="number"
+                          placeholder="Average percentage taken"
+                        />
+                      </div>
+                      <p class="small">
+                        <ErrorMessage name="average_percentage" />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-wrapper">
+              <a href="#" v-if="currentStep !== 0" @click="prevStep"
+                ><i class="fa fa-arrow-left"></i>Back</a
+              >
+
+              <button
+                type="submit"
+                class="btn-style black"
+                v-if="currentStep !== 1"
+              >
+                Next Step <i class="fa fa-arrow-right"></i>
+              </button>
+
+              <button
+                type="submit"
+                class="btn-style black"
+                v-if="currentStep === 1"
+              >
+                <SpinButton v-if="isLoadingRequest" />
+                <span v-else class="btn-text white-text">
+                  Save & Publish <i class="fa fa-arrow-right"></i
+                ></span>
+              </button>
+            </div>
+          </div>
+        </Form>
+        <!--        <div class="btn-wrapper">
+          <RouterLink to="#"><i class="fa fa-arrow-left"></i>Back</RouterLink>
+          <RouterLink to="#" data-bs-target="#successModal" data-bs-toggle="modal" class="btn-style black">Save & Publish<i class="fa fa-angle-right"></i></RouterLink>
+        </div>-->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import InvestorDashboardHeader from "@/components/investor/DashboardHeader.vue";
+import SpinButton from "@/components/SpinButton.vue";
+
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import { ref, reactive, computed, defineComponent, onMounted } from "vue";
+
+import {
+  getCountries,
+  fetchCities,
+  startupFundTypes,
+  fundPayloadKeys,
+  formDataHandler,
+} from "../../utils";
+
+import { useErrorHandling } from "../../helpers/errorLib";
+import { useStore } from "vuex";
+import server from "@/services/server";
+
+const store = useStore();
+const name = ref("AddFund");
+const isMenuActive1 = ref(false);
+const fundPayloadHandler = new formDataHandler();
+const isLoadingRequest = ref(false);
+
+const countryList = ref([]);
+const selectedCountry = ref("");
+const cityList = ref([]);
+const companyLogoImg = ref(null);
+
+const userId = computed(() => store.getters.getInvestor.id);
+const numberRange = computed(() =>
+  Array.from({ length: 20 }, (_, index) => index + 1)
+);
+const { error, setError, clearError, handleStatusCodeError } =
+  useErrorHandling();
+
+const currentStep = ref(0);
+
+const schemas = [
+  yup.object({
+    name: yup.string().required(),
+    fund_type: yup.string().required(),
+    about_fund: yup.string().required(),
+    country: yup.string().required(),
+    city: yup.string().required(),
+    youtube: yup.string().url().required(),
+    file: yup
+      .mixed()
+      .required()
+      .test("fileSize", "File size too large", (value) => {
+        return value && value.size <= 1000000; // 1 MB
+      })
+      .test("fileType", "Invalid file type", (value) => {
+        return value && ["image/jpeg", "image/png"].includes(value.type);
+      }),
+  }),
+  yup.object({
+    fund_value: yup.number().required(),
+    no_of_business: yup.number().required(),
+    extra_criteria: yup.string().required(),
+    fund_per_business: yup.number().required(),
+    average_percentage: yup.number().required(),
+  }),
+];
+
+const currentSchema = computed(() => {
+  return schemas[currentStep.value];
+});
+
+function nextStep(values) {
+  if (currentStep.value === 1) {
+    fundPayloadHandler.setDataHandlerKeys(fundPayloadKeys);
+    fundPayloadHandler.addFundsPayloadData(values, userId.value);
+    addFunds();
+    return;
+  }
+
+  currentStep.value++;
+}
+
+function prevStep() {
+  if (currentStep.value <= 0) {
+    return;
+  }
+  currentStep.value--;
+}
+
+const fetchCountries = () => {
+  getCountries()
+    .then((data) => {
+      countryList.value = data;
+    })
+    .catch((errStatus) => {
+      handleStatusCodeError(errStatus);
+    });
+};
+
+const getCities = (e) => {
+  fetchCities(selectedCountry.value)
+    .then((data) => {
+      cityList.value = data;
+    })
+    .catch((errStatus) => {
+      handleStatusCodeError(errStatus);
+    });
+};
+
+const handleFileChange = (event) => {
+  const selectedFile = event.target.files[0];
+  companyLogoImg.value = selectedFile;
+};
+
+const addFunds = async () => {
+  isLoadingRequest.value = true;
+  server()
+    .post("/investors/roles/createFund", fundPayloadHandler.getPayload())
+    .then((response) => {
+      isLoadingRequest.value = false;
+    })
+    .catch((err) => {
+      isLoadingRequest.value = false;
+      if (err.response && err.response.status) {
+        handleStatusCodeError(err.response.status);
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    });
+};
+
+onMounted(async () => {
+  await store
+    .dispatch("getLoggedInvestorProfile")
+    .then((response) => {
+      fetchCountries();
+    })
+    .catch((err) => {
+      if (err.response && err.response.status) {
+        handleStatusCodeError(err.response.status);
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    });
+});
+</script>
+
+
+<style scoped>
+.white-text {
+  color: white;
+  line-height: 24px;
+  font-size: 10px;
+  font-family: "Sora", sans-serif;
+  /* font-weight: 600; */
+}
+.btn-style .black span {
+  background: #000000;
+  color: #ffffff;
+}
+
+.btn-text {
+  line-height: 24px;
+  font-size: 10px;
+  font-family: "Sora", sans-serif;
+}
+.btn-style .black span {
+  background: #000000;
+  color: #ffffff;
+}
+
+.black:hover .white-text {
+  color: #000;
+  line-height: 24px;
+  font-size: 10px;
+  font-family: "Sora", sans-serif;
+  /* font-weight: 600; */
+}
+</style>
