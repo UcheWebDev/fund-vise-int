@@ -447,11 +447,16 @@ header {
       .btn-style {
         width: 343px;
         border: 2px solid $border-primary01;
+        color: $black;
         margin-bottom: 16px;
         font-weight: 400;
         font-size: 14px;
         @media screen and (max-width: 1199px) {
           width: 100%;
+        }
+        &:hover{
+          color: $white;
+          border-color: $black;
         }
       }
       p {
@@ -1209,11 +1214,18 @@ header {
       background: #FFF;
       padding: 16px;
       margin-bottom: 13px;
+      transition: all .3s ease-in-out;
+      &:hover{
+        box-shadow: rgba(0, 0, 0, 0.25) 0 14px 28px, rgba(0, 0, 0, 0.22) 0 10px 10px;
+      }
       .content-wrapper {
         //margin-bottom: 10px;
         p {
           margin-bottom: 8px;
           font-size: 10px !important;
+          img{
+            margin: 0 3px 0 6px;
+          }
           span {
             font-size: 10px;
           }
@@ -1864,6 +1876,12 @@ header {
       border: unset;
       li {
         position: relative;
+        opacity: .3;
+        pointer-events: none;
+        &.active{
+          pointer-events: all;
+          opacity: 1;
+        }
         &:before {
           content: '';
           position: absolute;
@@ -1902,7 +1920,7 @@ header {
           &:after {
             content: "";
             position: absolute;
-            width: calc(100% + 90px);
+            width: calc(100% + 105px);
             height: 2.25px;
             opacity: 0.2;
             background: #000;
@@ -1956,19 +1974,54 @@ header {
             font-size: 12px;
           }
         }
+        .video-wrapper{
+          .video{
+            iframe{
+              width: 100%;
+              height: 250px;
+              object-fit: cover;
+            }
+          }
+        }
       }
       .browse-wrapper {
         margin-bottom: 70px;
         .browse {
-          width: 344px;
-          height: 136px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-          background: #F3F3F3;
-          border: 2px dashed #E8E8E8;
-          border-radius: 12px;
+          label[for="upload-file"]{
+            width: 344px;
+            height: 136px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F3F3F3;
+            border: 2px dashed #E8E8E8;
+            border-radius: 12px;
+            span{
+              &.content{
+                text-align: center;
+              }
+              &.title{
+                font-size: 14px;
+                line-height: 22px;
+                color: #4B4B4B;
+                display: block;
+                margin-bottom: 6px;
+              }
+              &.browse-btn{
+                height: 36px;
+                min-width: 105px;
+                background: #E8E8E8;
+                border-radius: 20px;
+                font-size: 14px;
+                line-height: 22px;
+                color: $black;
+                padding: 7px 10px 6px;
+              }
+            }
+          }
+          #upload-file{
+            //display: none;
+          }
           p {
             margin-bottom: 6px;
             color: #4B4B4B;
@@ -1993,7 +2046,10 @@ header {
         flex-direction: column-reverse;
         gap: 24px;
       }
-      a {
+      &.publish-wrapper{
+        margin: 120px 0 0;
+      }
+      a, button {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -2006,6 +2062,13 @@ header {
           color: white;
           padding: 12px 36px;
           justify-content: center;
+        }
+        span{
+          font-size: 16px;
+          line-height: 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
         }
       }
     }
@@ -3269,4 +3332,11 @@ header {
       }
     }
   }
+}
+
+.error-message{
+  display: block;
+  color: #d9534f;
+  font-size: 13px;
+  line-height: 22px;
 }

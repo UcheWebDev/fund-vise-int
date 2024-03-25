@@ -12,7 +12,7 @@
     <div class="main-wrapper">
       <div class="container small">
         <ul class="steps nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item" role="presentation">
+          <li class="nav-item active" role="presentation">
             <a
               href="#"
               class="nav-link active"
@@ -140,10 +140,16 @@
                     <div class="browse-wrapper">
                       <p class="large">Add Logo or Company Image</p>
                       <div class="browse">
-                        <p class="gray">Drop files here to upload…</p>
+                        <label for="upload-file">
+                          <span class="content">
+                            <span class="title">Drop files here to upload…</span>
+                            <span class="browse-btn">Browse file</span>
+                          </span>
+                        </label>
                         <Field name="file" v-slot="{ handleChange }">
                           <input
                             type="file"
+                            id="upload-file"
                             @change="handleFileChange"
                             @blur="handleChange"
                           />
@@ -567,6 +573,7 @@
                           name="pitch_url"
                           id="name"
                           class="form-control"
+                          v-model="pitchUrl"
                           placeholder="Paste your Youtube or Vimeo iframe embeded code here..."
                         />
                       </div>
@@ -575,13 +582,16 @@
                       </p>
                     </div>
                     <div class="form-group">
-                      <textarea
+                      <div class="video-wrapper">
+                        <div class="video" v-html="pitchUrl"></div>
+                      </div>
+<!--                      <textarea
                         name="text"
                         id="text"
                         cols="30"
                         rows="10"
                         class="form-control"
-                      ></textarea>
+                      ></textarea>-->
                     </div>
                   </div>
                 </div>
@@ -745,7 +755,7 @@
                   </div>
                 </div>
               </div>
-              <div class="btn-wrapper">
+              <div class="btn-wrapper publish-wrapper">
                 <a href="#" @click="Level1Tab(2)"
                   ><i class="fa fa-arrow-left"></i>Back</a
                 >
@@ -755,9 +765,9 @@
                   class="btn-style black"
                 >
                   <SpinButton v-if="isLoadingRequest" />
-                  <span v-else class="btn-text white-text">
-                    Save & Publish <i class="fa fa-arrow-right"></i
-                  ></span>
+                  <div v-else>
+                    Save & Publish
+                  </div>
                 </button>
               </div>
             </div>
@@ -767,14 +777,14 @@
     </div>
   </div>
 </template>
- 
+
  <script setup>
 import DashboardHeader from "@/components/entrepreneur/DashboardHeader.vue";
 import SpinButton from "@/components/SpinButton.vue";
 
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { ref, reactive, computed, defineComponent, onMounted } from "vue";
+import { ref, reactive, computed, defineComponent, watch, onMounted } from "vue";
 import { useField } from "vee-validate";
 
 import {
@@ -799,6 +809,7 @@ const name = "AddCampaign";
 const activeTab1 = ref(0);
 const countryList = ref([]);
 const selectedCountry = ref("");
+const pitchUrl = ref("");
 const cityList = ref([]);
 const companyLogoImg = ref(null);
 const userId = computed(() => store.getters.getEnteprenuer.id);
@@ -863,6 +874,9 @@ const currentSchema = computed(() => {
   return schemas[currentStep.value];
 });
 
+watch(pitchUrl, (newValue, oldValue) => {
+  console.log("Pitch URL changed:", newValue);
+});
 function nextStep(values) {
   if (currentStep.value === 3) {
     CampaignPayloadHandler.setDataHandlerKeys(campaignPayLoadkeys);

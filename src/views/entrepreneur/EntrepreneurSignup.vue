@@ -38,7 +38,7 @@
                     placeholder="Enter your email"
                     v-model="email"
                   />
-                  <p class="small">{{ errors.email }}</p>
+                  <p class="small error-message">{{ errors.email }}</p>
                 </div>
                 <div class="form-group">
                   <label for="password">Password</label>
@@ -48,7 +48,7 @@
                     placeholder=" Create a password"
                     v-model="password"
                   />
-                  <p class="small">{{ errors.password }}</p>
+                  <p class="small error-message">{{ errors.password }}</p>
                 </div>
 
                 <div class="login">
@@ -65,8 +65,8 @@
                 <div class="tos">
                   <input type="checkbox" v-model="terms" />
                   <p>Agree to <span>Terms of Service</span></p>
-                  <p class="small">{{ errors.terms }}</p>
                 </div>
+                <p class="error-message">{{ errors.terms }}</p>
                 <div class="signup-button">
                   <button class="btn-style" type="submit">
                     <SpinButton v-if="isLoadingRequest" />
@@ -204,4 +204,4 @@ const closeModal = () => {
 .btn-style:hover {
   background: #000000;
 }
-</style> 
+</style>
