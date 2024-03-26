@@ -761,10 +761,13 @@
                 <a href="#" @click="Level1Tab(2)"
                   ><i class="fa fa-arrow-left"></i>Back</a
                 >
+<!--                data-bs-toggle="modal" data-bs-target="#successModal"-->
                 <button
                   type="submit"
                   v-if="currentStep === 3"
                   class="btn-style black"
+                  @click="publishPost"
+                  data-bs-toggle="modal" data-bs-target="#successModal"
                 >
                   <SpinButton v-if="isLoadingRequest" />
                   <div v-else>
@@ -775,6 +778,26 @@
             </div>
           </div>
         </Form>
+      </div>
+    </div>
+    <div class="verify-email-modal success-modal show modal-open">
+      <div class="modal fade" style="display: none;" id="successModal" ref="myModal">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <a href="#" data-bs-dismiss="modal"><img src="../../assets/images/icons/cross-x-icon.svg" alt="Cross"></a>
+            </div>
+            <div class="modal-body">
+              <div class="verify-email">
+                <h3>Successful</h3>
+                <img src="../../assets/images/icons/check-circle-broken-icon.svg" alt="Check">
+                <p>Hi Entrepreneur!
+                  <br> You have successfully created your campaign.</p>
+                <a href="#" class="btn-style black">Done</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -827,7 +850,7 @@ const teamMemberDetailedInfo = ref(null);
 
 const teamMembersList = ref([]);
 
-const currentStep = ref(0);
+const currentStep = ref(3);
 const schemas = [
   yup.object({
     name: yup.string().required(),
@@ -881,6 +904,11 @@ const currentSchema = computed(() => {
 watch(pitchUrl, (newValue, oldValue) => {
   console.log("Pitch URL changed:", newValue);
 });
+
+function publishPost(){
+  console.log("pl");
+}
+
 function nextStep(values) {
   if (currentStep.value === 3) {
     CampaignPayloadHandler.setDataHandlerKeys(campaignPayLoadkeys);
