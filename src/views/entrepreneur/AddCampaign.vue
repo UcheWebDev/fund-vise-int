@@ -850,7 +850,7 @@ const teamMemberDetailedInfo = ref(null);
 
 const teamMembersList = ref([]);
 
-const currentStep = ref(3);
+const currentStep = ref(0);
 const schemas = [
   yup.object({
     name: yup.string().required(),
