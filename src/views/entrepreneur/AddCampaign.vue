@@ -583,7 +583,9 @@
                     </div>
                     <div class="form-group">
                       <div class="video-wrapper">
-                        <div class="video" v-html="pitchUrl"></div>
+                        <div class="video">
+                          <iframe width="560" height="315" :src="pitchUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
                       </div>
 <!--                      <textarea
                         name="text"
@@ -786,7 +788,9 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ref, reactive, computed, defineComponent, watch, onMounted } from "vue";
 import { useField } from "vee-validate";
-
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { VNodeIcon, ComponentIcon } from '@/components/ToastIcons.js'
 import {
   industries,
   getCountries,
@@ -891,7 +895,6 @@ function nextStep(values) {
 
   currentStep.value++;
 }
-
 function prevStep() {
   if (currentStep.value <= 0) {
     return;
@@ -957,6 +960,15 @@ const addTeamMember = () => {
     role: teamMemberRole.value,
     info: teamMemberDetailedInfo.value,
     linkedin: teamMemberLinkedIn.value,
+  });
+  toast("Team member added", {
+    autoClose: 2000,
+    type: "success",
+    position: "top-center",
+    hideProgressBar: true,
+    transition: "slide",
+    dangerouslyHTMLString: true,
+    icon: VNodeIcon,
   });
 };
 
